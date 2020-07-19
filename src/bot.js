@@ -8,7 +8,7 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
-  if (msg.content.includes("한강")) {
+  if (msg.author.id != client.user.id &&msg.content.includes("한강")) {
     fetch(URI)
         .then(res =>res.json())
         .then(data => {
