@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/TaYaKi71751/H4nR1v3rB0t#readme",
   "dependencies": {
-    "node-telegram-bot-api": "^0.40.0"
+    "discord.js": "^12.2.0",
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {}
 }
