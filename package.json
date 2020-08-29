@@ -18,7 +18,8 @@
   "homepage": "https://github.com/TaYaKi71751/H4nR1v3rB0t#readme",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
-    "node-telegram-bot-api": "^0.40.0",
+    "dotenv": "^8.2.0",
+    "node-telegram-bot-api": "^0.50.0",
     "phantom": "^6.3.0"
   },
   "devDependencies": {}
