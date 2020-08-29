@@ -1,10 +1,9 @@
+require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const phantom = require('phantom');
 const cheerio = require('cheerio');
-const bot = new TelegramBot(bot_token, { polling: true });
-
+const bot = new TelegramBot(process.env.bot_token, { polling: true });
 bot.on('inline_query', function (query) {
-    // if(query.query.includes("한강"))
     (async function () {
         var URI = 'http://swo.seoul.go.kr/water/waterMesntkInfo.do';
         var instance = await phantom.create();
@@ -16,7 +15,7 @@ bot.on('inline_query', function (query) {
         var status = await page.open(URI);
         var content = await page.property('content');
         var $ = cheerio.load(content, { xml: { normalizeWhiteSpace: true, }, });
-        $('tbody[id=schResult]').html();
+        $('tbody#schResult').html();
         var i = -1;
         nrjInfo = null;
         for (var i = 0; i < $('tbody[id=schResult]')[0].children.length; i++) {
@@ -39,11 +38,9 @@ bot.on('inline_query', function (query) {
             type: 'article',
             title: 'Noryangjin',
             description: 'Send Temp from swo.seoul.go.kr',
-            message_text: '' + nrjInfo.temp + '℃'// +
-            //  '\n' + 'Source :' + URI +
-            //  '\n' + 'at :' + nrjInfo.date.YYYY + '-' + nrjInfo.date.MM + '-' + nrjInfo.date.DD + '[' +nrjInfo.time.HH + ':' + nrjInfo.time.mm + ']'
+            message_text: '' + nrjInfo.temp + '℃'
         }],{cache_time:0});
 
         await instance.exit();
     })();
-});
+      });
