@@ -3,7 +3,7 @@
 >## Config
 ><pre>
 ><code>
->const bot_token = '$YOUR_TELEGRAM_BOT_TOKEN';
+> echo "bot_token=${YOUR_TELEGRAM_BOT_TOKEN}">./.env
 ></code>
 ></pre>
 
