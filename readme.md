@@ -1,5 +1,12 @@
 # HanRiverBot
 
+>## Dependency
+><pre>
+><code>
+>pacman -S curl nodejs npm
+></code>
+></pre>
+
 >## Config
 ><pre>
 ><code>
