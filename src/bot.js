@@ -1,6 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api');
 const bot = new TelegramBot(bot_token, { polling: true });
-var exec = require('child_process').exec, child;
+var { exec } = require('child_process');
 var hanriver, time;
 const URI = "hangang.dkserver.wo.tc";
 const http = "http\:\/\/";
@@ -15,21 +15,43 @@ const helpMessage = "Keywords : {"
     + ": Help Command"
     + "\n"
     + "\t/hanriver_temperature "
-    + ": GET Han River's Temperature"
+    + ": GET Han River's Temperature from " + URI
     + "\n"
     + "}";
-const mssg = "년 월 일 시 분 초".split(" ");
-const msssg = "한강의\t온도는\n\t\t\t\t\t\t \°C\n \n".split(" ");
+
+const lang = require('../lang/lang.js'), language = "ja-jp";
 bot.on('message', (msg) => {
     var chatId = msg.chat.id;
+    function f() {
+        if (res = !(!(msg.text.match(new RegExp('[' + lang[language]["keywords"]["hanriver"]["regex"] + ']*$'))[0]))) {
+            return res;
+        }
+        if (res = !(!(msg.text.match(new RegExp('[' + lang[language]["keywords"]["bridge"]["regex"] + ']*$'))))) {
+            const nameCheck = "A-Z|a-z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|一-龯|ぁ-んァ-ヾ|ｧ-ﾝﾞﾟ|Ａ-ｚ|ぁ-ゞ|ァ-ヶ|ｦ-ﾟ",
+                bridgeKeywords = lang[language]["keywords"]["bridge"],
+                bridgeKeywordsRegex = bridgeKeywords["regex"];
+            //Japanese Regex from https://gist.github.com/terrancesnyder/1345094
+            var bn = msg.text.substring(0, msg.text.indexOf(msg.text.match(new RegExp('[' + bridgeKeywordsRegex + ']*$'))));
+            var lastIndex;
+            for (var i = 0; i < lang[language]["keywords"]["bridge"].length; i++) {
+                if (i == 0 || msg.text.lastIndexOf(bridgeKeywords[i]) > lastIndex) {
+                    lastIndex = msg.text.lastIndexOf(bridgeKeywords[i]);
+                }
+            }
+            bn = msg.text.substring(0,lastIndex);
+            while (!(!(bn.match(new RegExp("((?![" + nameCheck + "]).)"))))) {
+                bn = bn.replace(new RegExp("((?![" + nameCheck + "]).)"), "");
+            }
+            return !(!(bn.match(new RegExp('[' + nameCheck + ']*$'))[0])) && res;
+        }
+        return false;
+    }
     if (msg.text.indexOf("\/help") === 0)
         bot.sendMessage(chatId, helpMessage);
-    if (msg.text && msg.text.includes("한강")
-        || msg.text.includes("ハンガン")
-        || msg.text.includes("漢江")
-        || msg.text.indexOf("대교") > 0
+    if (
+        f()
         || msg.text.indexOf("\/hanriver_temperature") === 0) {
-        child = exec("echo "
+        exec("echo "
             + "$(curl "
             + "-LsSfH "
             + "'Cache-Control: no-cache' "
@@ -37,41 +59,15 @@ bot.on('message', (msg) => {
             + URI
             + ")",
             function (error, stdout, stderr) {
+                if (error || stderr) console.error(error, stderr);
                 hanriver = JSON.parse(stdout);
-<<<<<<< HEAD
-                htime = hanriver.time.split(" ");
-                date = htime[0].split("-");
-                time = htime[1].split(":");
+                time = hanriver.time.split(new RegExp('[:| |-]'));
                 console.log("Triggered\n");
-                message = "한강 물 온도는 섭씨 " + hanriver.temp + " 도 입니다.\n";
-                for(var i = 0;i<date.length;i++)
-                    message += date[i].indexOf("0") === 0 
-                     ? date[i].substring(date[i].indexOf("0") + 1,date[i].length) + datee[i]
-                      : date[i] + datee[i];
-                for(var i = 0;i<time.length;i++)
-                    message += time[i].indexOf("0") === 0
-                     ? time[i].substring(time[i].indexOf("0") + 1,time[i].length) + timee[i]
-                      : time[i] + timee[i];
-                    message += "측정"
-                    + "\n"
-                    + "출처 : "
-                    + URI;
-                bot.sendMessage(chatId,message);
-=======
-                for (time = hanriver.time.replace("-", " ").replace(":", " "); time.includes("-") || time.includes(":");)
-                    time = time.replace("-", " ").replace(":", " ");
-                time = time.split(" ");
+                message = lang[language]["result"][0] + hanriver.temp + lang[language]["result"][1];
                 for (var i = 0; i < time.length; i++)
-                    time[i] = time[i].indexOf("0") === 0 ? time[i].substring(1, time[i].length) : time[i];
-                var message = "";
-                for (var i = 0; i < time.length; i++)
-                    message += i % 3 === 0 ? "\n\t" + time[i] + mssg[i] + " " : time[i] + mssg[i] + " ";
-                message += "\n";
-                for (var i = 0; i < msssg.length; i++)
-                    message += i === 1 ? hanriver.temp + msssg[i] : i === 2 ? /*URI +*/ " " + msssg[i] : msssg[i];
+                    message += (!(time[i].indexOf("0")) ? time[i].substring(time[i].indexOf("0")) : time[i]) + lang[language]["time"][i]
+                        + ((i + 1 == time.length / 2) ? "\n" : " ") + ((i + 1) == time.length ? "\n" + "*Ref*:" + http + URI : "");
                 bot.sendMessage(chatId, message);
->>>>>>> bot-edit
             });
-        child();
     }
 });
