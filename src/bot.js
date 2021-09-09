@@ -19,15 +19,17 @@ bot.on('message', (msg) => {
                 bridgeKeywordsRegex = bridgeKeywords["regex"];
             //Japanese Regex from https://gist.github.com/terrancesnyder/1345094
             var bn = msg.text.substring(0, msg.text.indexOf(msg.text.match(new RegExp('[' + bridgeKeywordsRegex + ']*$'))));
-            var lastIndex;
-            for (var i = 0; i < lang[language]["keywords"]["bridge"].length; i++) {
-                if (i == 0 || msg.text.lastIndexOf(bridgeKeywords[i]) > lastIndex) {
-                    lastIndex = msg.text.lastIndexOf(bridgeKeywords[i]);
+            if (!(bn)) {
+                var lastIndex;
+                for (var i = 0; i < lang[language]["keywords"]["bridge"].length; i++) {
+                    if (i == 0 || msg.text.lastIndexOf(bridgeKeywords[i]) > lastIndex) {
+                        lastIndex = msg.text.lastIndexOf(bridgeKeywords[i]);
+                    }
                 }
-            }
-            bn = msg.text.substring(0,lastIndex);
-            while (!(!(bn.match(new RegExp("((?![" + nameCheck + "]).)"))))) {
-                bn = bn.replace(new RegExp("((?![" + nameCheck + "]).)"), "");
+                bn = msg.text.substring(0, lastIndex);
+                while (!(!(bn.match(new RegExp("((?![" + nameCheck + "]).)"))))) {
+                    bn = bn.replace(new RegExp("((?![" + nameCheck + "]).)"), "");
+                }
             }
             return !(!(bn.match(new RegExp('[' + nameCheck + ']*$'))[0])) && res;
         }
