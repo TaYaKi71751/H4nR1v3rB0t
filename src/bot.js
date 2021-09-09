@@ -4,20 +4,7 @@ var { exec } = require('child_process');
 var hanriver, time;
 const URI = "hangang.dkserver.wo.tc";
 const http = "http\:\/\/";
-const helpMessage = "Keywords : {"
-    + "\n"
-    + "\t한강,\n"
-    + "\t\*대교\n"
-    + "}\n"
-    + "Commands : {"
-    + "\n"
-    + "\t\/help "
-    + ": Help Command"
-    + "\n"
-    + "\t/hanriver_temperature "
-    + ": GET Han River's Temperature from " + URI
-    + "\n"
-    + "}";
+const helpMessage = "";
 
 const lang = require('../lang/lang.js'), language = "ja-jp";
 bot.on('message', (msg) => {
