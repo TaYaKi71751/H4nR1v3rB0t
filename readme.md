@@ -10,7 +10,7 @@
 >## Config
 ><pre>
 ><code>
->const bot_token = '$YOUR_TELEGRAM_BOT_TOKEN';
+> echo "module.exports = \"$(TELEGRAM_BOT_TOKEN)\";" > ./bot_token.js
 ></code>
 ></pre>
 

@@ -1,5 +1,5 @@
 const TelegramBot = require('node-telegram-bot-api');
-const bot = new TelegramBot(bot_token, { polling: true });
+const bot = new TelegramBot(require('../bot_token'), { polling: true });
 var { exec } = require('child_process');
 var hanriver, time;
 const URI = "hangang.dkserver.wo.tc";
